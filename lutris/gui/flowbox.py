@@ -80,7 +80,8 @@ class GameFlowBox(FlowBox):
         "game-selected": (GObject.SIGNAL_RUN_FIRST, None, ()),
         "game-activated": (GObject.SIGNAL_RUN_FIRST, None, ()),
         "game-installed": (GObject.SIGNAL_RUN_FIRST, None, (int,)),
-        "remove-game": (GObject.SIGNAL_RUN_FIRST, None, ())
+        "remove-game": (GObject.SIGNAL_RUN_FIRST, None, ()),
+        "play-script": (GObject.SIGNAL_RUN_FIRST, None, ())
     }
 
     def __init__(self, game_list, icon_type='banner', filter_installed=False):

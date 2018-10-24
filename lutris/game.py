@@ -17,6 +17,7 @@ from lutris.config import LutrisConfig
 from lutris.thread import LutrisThread, HEARTBEAT_DELAY
 from lutris.gui import dialogs
 from lutris.util.timer import Timer
+from lutris.util.script_thread import ScriptThread
 
 
 class Game:
@@ -364,6 +365,14 @@ class Game:
         if self.runner.system_config.get('disable_compositor'):
             self.desktop_effects(False)
 
+        # Check for pre game script
+        pre_script = self.runner.system_config.get("pre_script")
+        if pre_script:
+            pre_script_thread = ScriptThread(pre_script)
+            pre_script_thread.start()
+            if self.runner.system_config.get("wait_for_script_completion"):
+                pre_script_thread.join()
+
         self.game_thread = LutrisThread(launch_arguments,
                                         runner=self.runner,
                                         env=env,
@@ -436,6 +445,11 @@ class Game:
 
         self.timer.end_t()
         self.playtime = self.timer.increment(self.playtime)
+
+        # Check for post game script
+        post_script = self.runner.system_config.get("post_script")
+        if post_script:
+            ScriptThread(post_script).start()
 
         self.heartbeat = None
         if self.state != self.STATE_STOPPED:
